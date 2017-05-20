@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace BitchSlapperBot
 {
@@ -39,31 +40,42 @@ namespace BitchSlapperBot
             discord.ExecuteAndWait(async () =>
             {
                 await discord.Connect("MzE1NDk5MTY1OTA2MTA4NDE3.DAHtkg.LQTkR30o4TC7F5WOYO1GBcYh_hk", TokenType.Bot);
+                discord.SetGame("Slapping Simulator");
             });
-
-            discord.SetGame("Slapping Simulator 2017");
-            discord.SetStatus("Slapping Simulator 2017");
         }
 
-        private async void slap()
+        private void slap()
         {
+            /**
             commands.CreateCommand("hello")
                .Do(async (e) =>
                {
                    await e.Channel.SendMessage("Hi, " + e.User.Name.ToString());
-               });
+               });**/
 
             commands.CreateCommand("slap").Parameter("user", ParameterType.Required).Do(async (e) =>
             {
                 var user = e.Args[0];
+                Console.WriteLine(user);
+                var expr = @"[<][@]\d+[>]$";
+                Match match = Regex.Match(user, expr);
+                Console.WriteLine(match.Value);
+                Console.WriteLine(match.Success);
                 string message = "bloop";
-                if (user.ToLower().Equals("snake"))
-                {
-                    message = "Tut mir Leid, " + e.User.Name + ". Ich bin nicht autorisiert meinen Schöpfer Snake zu slappen.";
+                if (match.Success)
+                { 
+                    if (user.Equals("<@279276010640506880>"))
+                    {
+                        message = "Tut mir Leid, " + e.User.Name + ". Ich bin nicht autorisiert meinen Schöpfer Snake zu slappen.";
+                    }
+                    else
+                    {
+                        message = "SLAP!!! "+ user + " wurde gerade ge-bitch-slapped, weil er/sie etwas Dämliches gesagt oder getan hat.";
+                    }
                 }
                 else
                 {
-                    message = user + " wurde gerade ge-bitch-slapped, weil er/sie etwas Dämliches gesagt oder getan hat.";
+                    message = "Der Spieler " + user + " wurde nicht gefunden. Versuch's doch mal mit einem Mention (@Name)!";
                 }
 
                 await e.Channel.SendMessage(message);
