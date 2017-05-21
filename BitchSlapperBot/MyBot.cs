@@ -24,6 +24,8 @@ namespace BitchSlapperBot
         string botId = "<@315499165906108417>";
         string nemId = "<@289094204813213697>";
 
+        static string[] SLAP_RANKS = { "Platz 1", "Platz 2", "Platz 3" };
+
 
         // Constructor
         public MyBot()
@@ -54,11 +56,26 @@ namespace BitchSlapperBot
             commands = discord.GetService<CommandService>();
             slap();
             secret();
+            slaprank();
 
             discord.ExecuteAndWait(async () =>
             {
                 await discord.Connect("MzE1NDk5MTY1OTA2MTA4NDE3.DAHtkg.LQTkR30o4TC7F5WOYO1GBcYh_hk", TokenType.Bot);
                 discord.SetGame("Slapping Simulator");
+            });
+        }
+
+        private void slaprank()
+        {
+            commands.CreateCommand("slaprank").Do(async (e) =>
+            {
+                var sortedDict = from entry in slapUsers orderby entry.Value descending select entry;
+                string result = "Die Top 3 Kassierer von Slaps:\n\n";
+                for (int i = 0; i < 3; i++)
+                {
+                    result += String.Format("{0}:\t\t{1} mit {2} Slaps.\n", SLAP_RANKS[i], sortedDict.ElementAt(i).Key, sortedDict.ElementAt(i).Value);
+                }
+                await e.Channel.SendMessage(result);
             });
         }
 
@@ -140,7 +157,7 @@ namespace BitchSlapperBot
 
         private void saveSlapUsers()
         {
-            File.WriteAllText(@"..\..\slaps.json", JsonConvert.SerializeObject(slapUsers));
+            File.WriteAllText(@"..\..\slaps.json", JsonConvert.SerializeObject(slapUsers, Formatting.Indented));
         }
 
         private void Log(object Sender, LogMessageEventArgs e)
