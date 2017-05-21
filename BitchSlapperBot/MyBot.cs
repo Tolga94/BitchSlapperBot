@@ -61,7 +61,7 @@ namespace BitchSlapperBot
             {
                 string user = e.Args[0];
                 Console.WriteLine(user);
-                var expr = @"[<][@]\d+[>]$";
+                var expr = @"[<][@]\S\d+[>]$";
                 Match match = Regex.Match(user, expr);
                 Console.WriteLine(match.Value);
                 Console.WriteLine(match.Success);
