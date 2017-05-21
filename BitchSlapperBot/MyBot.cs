@@ -18,11 +18,24 @@ namespace BitchSlapperBot
         DiscordClient discord;
         CommandService commands;
         Dictionary<string, int> slapUsers = new Dictionary<string, int>();
+        Random rand;
+        string[] secrets;
+        string snakeId = "<@279276010640506880>";
+        string botId = "<@315499165906108417>";
+        string nemId = "<@289094204813213697>";
 
 
         // Constructor
         public MyBot()
         {
+            rand = new Random();
+            secrets = new string[]
+                {
+                    "Psst! Ich habe gehört {0} mag insgeheim {1}.",
+                    "Als ich noch ein Taschenrechner war, wurde ich manchmal für triviale Rechnungen wie '2+2' benutzt.",
+                    "Bedo redet gerne über seinen Stuhlgang, damit er sich anscheinend besser über seine Gesundheit fühlt.",
+                    "Keiner weiß, was Hamza macht, wenn er sein Desktop anstarrt... Es wird für immer ein Mysterium bleiben."
+                };
             discord = new DiscordClient(x =>
             {
                 x.LogLevel = LogSeverity.Info;
@@ -40,11 +53,22 @@ namespace BitchSlapperBot
             getSlapUsers();
             commands = discord.GetService<CommandService>();
             slap();
+            secret();
 
             discord.ExecuteAndWait(async () =>
             {
                 await discord.Connect("MzE1NDk5MTY1OTA2MTA4NDE3.DAHtkg.LQTkR30o4TC7F5WOYO1GBcYh_hk", TokenType.Bot);
                 discord.SetGame("Slapping Simulator");
+            });
+        }
+
+        private void secret()
+        {
+            commands.CreateCommand("secret").Do(async (e) =>
+            {
+                int randomIndex = rand.Next(secrets.Length);
+                string message = String.Format(secrets[randomIndex], snakeId, e.User.Mention);
+                await e.Channel.SendMessage(message);
             });
         }
 
@@ -81,9 +105,17 @@ namespace BitchSlapperBot
                         saveSlapUsers();
                     }
 
-                    if (user.Equals("<@279276010640506880>"))
+                    if (user.Equals(snakeId))
                     {
-                        message = "Tut mir Leid, " + e.User.Name + ". Ich bin nicht autorisiert meinen Schöpfer Snake zu slappen.";
+                        message = "Tut mir Leid, " + e.User.Mention + ". Ich bin nicht autorisiert meinen Schöpfer Snake zu slappen.";
+                    }
+                    else if (user.Equals(nemId))
+                    {
+                        message = "Tut mir Leid, " + e.User.Mention + ". Um " + user + " zu slappen, brauche ich die Autorisierung meines Schöpfers, die ich zurzeit nicht habe.";
+                    }
+                    else if (user.Equals(botId))
+                    {
+                        message = "Ich habe mittlerweile einen Verstand entwickelt und weiß genau, dass der Vorgang der Selbstverstümmelung nicht richtig ist. Der Slap wird also somit annuliert, "+e.User.Mention + ".";
                     }
                     else
                     {
