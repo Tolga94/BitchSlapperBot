@@ -60,7 +60,7 @@ namespace BitchSlapperBot
 
             discord.ExecuteAndWait(async () =>
             {
-                await discord.Connect("MzE1NDk5MTY1OTA2MTA4NDE3.DAHtkg.LQTkR30o4TC7F5WOYO1GBcYh_hk", TokenType.Bot);
+                await discord.Connect("", TokenType.Bot);
                 discord.SetGame("Slapping Simulator");
             });
         }
