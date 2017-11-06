@@ -14,7 +14,7 @@ namespace BitchSlapperBot
         private DiscordSocketClient client;
         private IServiceProvider services;
 
-        String token = "MzE1NDk5MTY1OTA2MTA4NDE3.DLBXfA.RZWZfiPmodrKZfhgLTsZEKqPwX8";
+        String token = "";
         static void Main(string[] args) => new Program().Start().GetAwaiter().GetResult();
 
         public async Task Start()
